@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.step.ap.base.BaseService;
 import com.step.ap.entity.App;
 import com.step.ap.entity.AppVersion;
+import com.step.ap.entity.DownloadTime;
 import com.step.ap.exception.MyException;
 import com.step.ap.vo.AppUploadVo;
 import com.step.ap.vo.AppVo;
@@ -30,6 +31,7 @@ public class AppService extends BaseService<App> {
 
     private final AppVersionService appVersionService;
     private final FileSystemStorageService storageService;
+    private final DownloadTimeService downloadTimeService;
 
     public List<AppVo> getList() {
         List<App> list = super.list(new LambdaQueryWrapper<App>().orderByDesc(App::getUpdateTime));
@@ -45,9 +47,13 @@ public class AppService extends BaseService<App> {
         return list.stream().map(app -> {
             AppVo appVo = app.toBean(AppVo.class);
             AppVersion appVersion = appMap.get(app.getCurrentVersionId());
+            if(downloadTimeService.getById(appVersion.getAppId())!=null){
+                appVo.setDownloadCount(downloadTimeService.getById(appVersion.getAppId()).getDownloadCount());
+            }
             appVo.setCurrentVersion(appVersion);
             return appVo;
         }).collect(Collectors.toList());
+
     }
 
     public AppVo selectById(int id) {

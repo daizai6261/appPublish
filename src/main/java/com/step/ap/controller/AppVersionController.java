@@ -3,6 +3,7 @@ package com.step.ap.controller;
 import com.step.ap.config.annotation.NoAuth;
 import com.step.ap.entity.AppVersion;
 import com.step.ap.service.AppVersionService;
+import com.step.ap.service.DownloadTimeService;
 import com.step.ap.service.FileSystemStorageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,7 +25,7 @@ import java.nio.file.Paths;
 @RequestMapping("api/appVersions")
 public class AppVersionController {
     private final AppVersionService appVersionService;
-
+    private final DownloadTimeService downloadTimeService;
     @ApiOperation("编辑")
     @PutMapping
     public void updateById(@RequestBody AppVersion appVersion) {
@@ -41,6 +42,7 @@ public class AppVersionController {
     @ApiOperation("apk下载")
     @GetMapping("downloadApk/{versionId}")
     public ResponseEntity<Resource> downloadApk(@PathVariable Integer versionId) {
+        downloadTimeService.downloadCount(versionId);
         return appVersionService.downloadApk(versionId);
     }
 }
