@@ -27,4 +27,13 @@ create table if not exists app_version
     changeLog     varchar(1000) null,
     createTime    datetime      null
 )
+drop table if exists download_time;
+create table download_time
+(
+    id                   int not null auto_increment,
+    app_id               int,
+    date                 date,
+    download_count       bigint,
+    primary key (id)
+);
 

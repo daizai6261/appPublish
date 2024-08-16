@@ -6,7 +6,6 @@ import com.step.ap.entity.AppVersion;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -40,6 +39,7 @@ public class AppVersionService extends BaseService<AppVersion> {
         AppVersion appVersionNew = new AppVersion();
         appVersionNew.setId(appVersion.getId());
         appVersionNew.setDownloadCount(appVersion.getDownloadCount() + 1);
+        System.out.println(1);
         super.updateById(appVersionNew);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileNameEncode)
