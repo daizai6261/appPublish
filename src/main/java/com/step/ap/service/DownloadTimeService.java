@@ -22,7 +22,7 @@ public class DownloadTimeService extends BaseService<DownloadTime> {
     private final AppVersionService appVersionService;
 
 
-    public void downloadCount(Integer versionId){
+    public synchronized void downloadCount(Integer versionId){
         //记录下载日期
         AppVersion appVersion= appVersionService.getById(versionId);
         long time = System.currentTimeMillis();
