@@ -9,6 +9,7 @@ import com.step.ap.exception.MyException;
 import com.step.ap.vo.AppUploadVo;
 import com.step.ap.vo.AppVo;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @AllArgsConstructor
+@Slf4j
 public class AppService extends BaseService<App> {
 
     private final AppVersionService appVersionService;
@@ -47,8 +49,9 @@ public class AppService extends BaseService<App> {
         return list.stream().map(app -> {
             AppVo appVo = app.toBean(AppVo.class);
             AppVersion appVersion = appMap.get(app.getCurrentVersionId());
-            if(downloadTimeService.getById(appVersion.getAppId())!=null){
-                appVo.setDownloadCount(downloadTimeService.getById(appVersion.getAppId()).getDownloadCount());
+            DownloadTime downloadTime = downloadTimeService.getById(appVersion.getAppId());
+            if(downloadTime != null){
+                appVo.setDownloadCount(downloadTime.getDownloadCount());
             }
             appVo.setCurrentVersion(appVersion);
             return appVo;
