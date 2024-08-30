@@ -76,6 +76,10 @@ public class DownloadTimeService extends BaseService<DownloadTime> {
         long time = System.currentTimeMillis();
         java.sql.Date date = new java.sql.Date(time);
         wrapper.eq("app_id", appId).eq("date", date);
-        return super.getOne(wrapper);
+        List<DownloadTime> downloadTimes = super.list(wrapper);
+        if(CollectionUtils.isEmpty(downloadTimes)) {
+            return null;
+        }
+        return downloadTimes.get(0);
     }
 }
