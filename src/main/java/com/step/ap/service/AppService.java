@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,30 @@ public class AppService extends BaseService<App> {
             AppVo appVo = app.toBean(AppVo.class);
             AppVersion appVersion = appMap.get(app.getCurrentVersionId());
             DownloadTime downloadTime = downloadTimeService.getById(appVersion.getAppId());
+            if(downloadTime != null){
+                appVo.setDownloadCount(downloadTime.getDownloadCount());
+            }
+            appVo.setCurrentVersion(appVersion);
+            return appVo;
+        }).collect(Collectors.toList());
+
+    }
+
+    public List<AppVo> getListByTime(String time) {
+        List<App> list = super.list(new LambdaQueryWrapper<App>().orderByDesc(App::getUpdateTime));
+        if(CollectionUtils.isEmpty(list)){
+            return new ArrayList<>();
+        }
+        List<Integer> appList = list.stream().map(App::getCurrentVersionId).collect(Collectors.toList());
+        List<AppVersion> appVersions = appVersionService.listByIds(appList);
+        if(CollectionUtils.isEmpty(appVersions)){
+            return new ArrayList<>();
+        }
+        Map<Integer, AppVersion> appMap = appVersions.stream().collect(Collectors.toMap(AppVersion::getId, v -> v, (k1, k2) -> k1));
+        return list.stream().map(app -> {
+            AppVo appVo = app.toBean(AppVo.class);
+            AppVersion appVersion = appMap.get(app.getCurrentVersionId());
+            DownloadTime downloadTime = downloadTimeService.getById(appVersion.getAppId(), Date.valueOf(time));
             if(downloadTime != null){
                 appVo.setDownloadCount(downloadTime.getDownloadCount());
             }
