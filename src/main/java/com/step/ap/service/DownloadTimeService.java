@@ -78,4 +78,14 @@ public class DownloadTimeService extends BaseService<DownloadTime> {
         wrapper.eq("app_id", appId).eq("date", date);
         return super.getOne(wrapper);
     }
+
+    public DownloadTime getById(Integer appId, java.sql.Date targetDate) {
+        QueryWrapper<DownloadTime> wrapper = new QueryWrapper<>();
+        wrapper.eq("app_id", appId).eq("date", targetDate);
+        List<DownloadTime> downloadTimes = super.list(wrapper);
+        if(CollectionUtils.isEmpty(downloadTimes)) {
+            return null;
+        }
+        return downloadTimes.get(0);
+    }
 }

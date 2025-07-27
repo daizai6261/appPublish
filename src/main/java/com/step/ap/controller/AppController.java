@@ -28,6 +28,11 @@ public class AppController {
         return appService.getList();
     }
 
+    @ApiOperation("根据日期获取所有应用")
+    @GetMapping("downloads/{time}")
+    public List<AppVo> getListByTime(@PathVariable String time) {
+        return appService.getListByTime(time);
+    }
     @ApiOperation("根据id获取详情")
     @GetMapping("{id}")
     public AppVo selectById(@PathVariable Integer id) {
